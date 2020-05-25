@@ -12,12 +12,9 @@
 #include <map>
 #include <mutex>
 #include <thread>
+#include <iomanip>
 
-#if 0
-#define D(...) { printf("DEBUG[%s,%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\n"); fflush(stdout); }
-#else
-#define D(...) { }
-#endif
+#include "types.h"
 
 namespace librealuvc {
 
@@ -347,10 +344,10 @@ bool VideoCapture::read(cv::OutputArray image) {
   auto istream = std::dynamic_pointer_cast<VideoStream>(istream_);
   { std::unique_lock<std::mutex> lock(istream->mutex_);
     if (!istream->is_streaming_) {
-      D("profile width %d, height %d, fps %d, format 0x%x",
-        istream->profile_.width, istream->profile_.height,
-        istream->profile_.fps, istream->profile_.format);
-      D("probe_and_commit() ...");
+      LOG_DEBUG("profile width " << istream->profile_.width << ", height " <<
+        istream->profile_.height << ", fps " << istream->profile_.fps << ", format 0x" <<
+        std::hex << istream->profile_.format);
+      LOG_DEBUG("probe_and_commit() ...");
       auto captured_istream = istream;
       realuvc_->probe_and_commit(
         istream->profile_,
@@ -361,13 +358,13 @@ bool VideoCapture::read(cv::OutputArray image) {
       );
 
       try {
-        D("stream_on() ...");
+        LOG_DEBUG("stream_on() ...");
         realuvc_->stream_on();
-        D("start_callbacks() ...");
+        LOG_DEBUG("start_callbacks() ...");
         realuvc_->start_callbacks();
         istream->is_streaming_ = true;
       } catch (std::exception e) {
-        printf("ERROR: caught exception %s\n", e.what());
+        LOG_ERROR("ERROR: caught exception: " << e.what());
         fflush(stdout);      
       }
     }
@@ -391,7 +388,7 @@ bool VideoCapture::read(cv::OutputArray image) {
 }
 
 void VideoCapture::release() {
-  D("VideoCapture::release() ...");
+  LOG_DEBUG("VideoCapture::release() ...");
   if (is_opencv_) {
     opencv_->release();
     opencv_.reset();
@@ -410,7 +407,7 @@ void VideoCapture::release() {
     is_realuvc_ = false;
     realuvc_.reset();
   }
-  D("VideoCapture::release() done");
+  LOG_DEBUG("VideoCapture::release() done");
 }
 
 bool VideoCapture::retrieve(cv::OutputArray image, int flag) {
@@ -489,7 +486,7 @@ bool VideoCapture::set(int prop_id, double val) {
       return false;
   }
   } catch (std::exception& e) {
-    printf("EXCEPTION: VideoCapture::set %s\n", e.what());
+    LOG_DEBUG("EXCEPTION: VideoCapture::set :" << e.what());
     throw;
   }
   return false;
@@ -564,12 +561,13 @@ bool VideoCapture::get_prop_range(int prop_id, double* min_val, double* max_val)
       range = realuvc_->get_pu_range(RU_OPTION_ZOOM_ABSOLUTE);
       break;
     default:
-      D("get_prop_range() -> false");
+      LOG_DEBUG("get_prop_range() -> false");
       return false;
   }
   *min_val = little_endian_to_double(range.min);
   *max_val = little_endian_to_double(range.max);
-  D("get_prop_range() -> true, { %.0f, %.0f }", *min_val, *max_val);
+  LOG_DEBUG("get_prop_range() -> true, { " << std::fixed << std::setprecision(0) <<
+    *min_val << ", " << *max_val << " }");
   return true;
 }
 

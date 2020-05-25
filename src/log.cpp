@@ -1,7 +1,18 @@
 #include <cstdio>
 #include <mutex>
-
 #include "types.h"
+
+#ifdef RS2_USE_ANDROID_BACKEND
+#include <android/log.h>
+#define  LOG_TAG    "librealuvc"
+
+#define  ANDROID_LOG_FATAL(...) __android_log_print(ANDROID_LOG_FATAL,LOG_TAG,__VA_ARGS__)
+#define  ANDROID_LOG_ERROR(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#define  ANDROID_LOG_WARNING(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
+#define  ANDROID_LOG_DEBUG(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  ANDROID_LOG_INFO(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#endif
+
 
 namespace librealuvc {
   
@@ -80,8 +91,24 @@ void log_to_file(ru_severity min_sev, const char* file_path) {
   get_single_logger()->log_to_file(min_sev, file_path);
 }
 
-void log_msg(ru_severity sev, const std::string& msg) {
-  get_single_logger()->log_msg(sev, msg);
-}
+#ifdef RS2_USE_ANDROID_BACKEND
+void android_log_msg(ru_severity sev, const std::string& msg) {
+      switch (sev) {
+        case RU_SEVERITY_DEBUG:   ANDROID_LOG_WARNING("%s",msg.c_str()); break;
+        case RU_SEVERITY_INFO:    ANDROID_LOG_INFO("%s",msg.c_str()); break;
+        case RU_SEVERITY_WARNING: ANDROID_LOG_WARNING("%s",msg.c_str()); break;
+        case RU_SEVERITY_ERROR:   ANDROID_LOG_ERROR("%s",msg.c_str()); break;
+        case RU_SEVERITY_FATAL:   ANDROID_LOG_FATAL("%s",msg.c_str()); break;
+        default:;
+      }
+    }
+#endif
 
+void log_msg(ru_severity sev, const std::string& msg) {
+#ifdef RS2_USE_ANDROID_BACKEND
+  android_log_msg(sev,msg);
+#else
+  get_single_logger()->log_msg(sev, msg);
+#endif
+}
 }

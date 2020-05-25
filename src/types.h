@@ -37,11 +37,11 @@ void log_msg(ru_severity sev, const std::string& ss);
     log_msg(sev, ss.str()); \
   } while (false)
 
-#define LOG_DEBUG(...)   LOG_WITH_SEVERITY(RU_SEVERITY_DEBUG,   __VA_ARGS__)
-#define LOG_INFO(...)    LOG_WITH_SEVERITY(RU_SEVERITY_INFO,    __VA_ARGS__)
-#define LOG_WARNING(...) LOG_WITH_SEVERITY(RU_SEVERITY_WARNING, __VA_ARGS__)
-#define LOG_ERROR(...)   LOG_WITH_SEVERITY(RU_SEVERITY_ERROR,   __VA_ARGS__)
-#define LOG_FATAL(...)   LOG_WITH_SEVERITY(RU_SEVERITY_FATAL,   __VA_ARGS__)
+#define LOG_DEBUG(...)   LOG_WITH_SEVERITY(librealuvc::RU_SEVERITY_DEBUG,   __VA_ARGS__)
+#define LOG_INFO(...)    LOG_WITH_SEVERITY(librealuvc::RU_SEVERITY_INFO,    __VA_ARGS__)
+#define LOG_WARNING(...) LOG_WITH_SEVERITY(librealuvc::RU_SEVERITY_WARNING, __VA_ARGS__)
+#define LOG_ERROR(...)   LOG_WITH_SEVERITY(librealuvc::RU_SEVERITY_ERROR,   __VA_ARGS__)
+#define LOG_FATAL(...)   LOG_WITH_SEVERITY(librealuvc::RU_SEVERITY_FATAL,   __VA_ARGS__)
 
 #pragma pack(push, 1)
 template<class T>
