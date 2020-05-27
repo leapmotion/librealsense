@@ -17,13 +17,25 @@ configure_package_config_file(CMake/librealuvcConfig.cmake.in librealuvcConfig.c
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
 configure_file(config/librealuvc.pc.in config/librealuvc.pc @ONLY)
 
-install(TARGETS ${LRS_TARGET}
-    EXPORT librealuvcTargets
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/librealuvc"
+
+if (TARGET ${LRS_TARGET}_static)
+    install(TARGETS ${LRS_TARGET}_static
+        EXPORT librealuvcTargets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/librealuvc"
 )
+endif()
+if (TARGET ${LRS_TARGET}_shared)
+    install(TARGETS ${LRS_TARGET}_shared
+        EXPORT librealuvcTargets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/librealuvc"
+)
+endif()
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/librealuvc
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
