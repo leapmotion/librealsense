@@ -38,6 +38,10 @@ if(BUILD_SHARED_LIBS)
     VERSION ${REALUVC_VERSION_STRING}
     SOVERSION ${REALUVC_VERSION_MAJOR}
 )
+  set_property(TARGET ${LRS_TARGET}_shared
+    PROPERTY
+      EXPORT_NAME ${LRS_TARGET}
+)
 endif()
 
 # add_OpenCV()
