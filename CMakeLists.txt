@@ -21,14 +21,8 @@ os_set_flags()
 # macro definition located at "CMake/global_config.cmake"
 global_set_flags()
 
-if(BUILD_SHARED_LIBS)
-  message(STATUS "add_library(${LRS_TARGET} SHARED)")
-  add_library(${LRS_TARGET} SHARED "")
-endif()
-if(BUILD_STATIC_LIBS)
-  message(STATUS "add_library(${LRS_TARGET}_static STATIC)")
-  add_library(${LRS_TARGET}_static STATIC "")
-endif()
+message(STATUS "add_library: ${LRS_TARGET} SHARED: ${BUILD_SHARED_LIBS}")
+add_library(${LRS_TARGET} "")
 
 # add_OpenCV()
 find_package(OpenCV REQUIRED)

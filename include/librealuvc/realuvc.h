@@ -32,7 +32,7 @@ class time_service;
 
 // backend supports querying devices and creating device-handles
 
-class LIBREALUVC_EXPORT backend {
+class backend {
  public:
   virtual ~backend() = default;
   
@@ -53,9 +53,9 @@ class LIBREALUVC_EXPORT backend {
 
 // create_backend() gives the appropriate backend for this platform
 
-LIBREALUVC_EXPORT std::shared_ptr<backend> create_backend();
+std::shared_ptr<backend> create_backend();
 
-class LIBREALUVC_EXPORT backend_device_group {
+class backend_device_group {
  public:
   vector<uvc_device_info> uvc_devices;
   vector<usb_device_info> usb_devices;
@@ -78,20 +78,20 @@ typedef std::function<
   void(backend_device_group old_devs, backend_device_group new_devs)
 > device_changed_callback;
 
-class LIBREALUVC_EXPORT device_watcher {
+class device_watcher {
  public:
   virtual ~device_watcher() = default;
   virtual void start(device_changed_callback callback) = 0;
   virtual void stop() = 0;
 };
 
-class LIBREALUVC_EXPORT time_service {
+class time_service {
  public:
   virtual ~time_service() = default;
   virtual ru_time_t get_time() const = 0;
 };
 
-class LIBREALUVC_EXPORT os_time_service : public time_service {
+class os_time_service : public time_service {
  public:
   virtual ~os_time_service() = default;
   virtual ru_time_t get_time() const;

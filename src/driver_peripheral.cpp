@@ -161,7 +161,7 @@ class PropertyDriverPeripheral : public IPropertyDriver {
 #define VENDOR_PERIPHERAL  0xf182
 #define PRODUCT_PERIPHERAL 0x0003
 
-LIBREALUVC_EXPORT void import_driver_peripheral() {
+void import_driver_peripheral() {
   register_property_driver(
     VENDOR_PERIPHERAL,
     PRODUCT_PERIPHERAL,

@@ -12,7 +12,7 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
-class LIBREALUVC_EXPORT hid_device_info {
+class hid_device_info {
  public:
   string id;
   string vid;
@@ -71,7 +71,7 @@ enum custom_sensor_report_field {
 
 typedef std::function<void(const sensor_data&)> hid_callback;
 
-class LIBREALUVC_EXPORT hid_device {
+class hid_device {
  public:
   virtual ~hid_device() = default;
   virtual void open(const vector<hid_profile>& hid_profiles) = 0;
