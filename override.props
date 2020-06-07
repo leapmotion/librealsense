@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(MSBuildProjectName)' == 'librealuvc'">
+      <PreLinkEvent>
+      <Message>Auto build dll exports</Message>
+      <Command>setlocal
+cd C:\build_old\debug\librealsense
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+cmake.exe -E __create_def $(ProjectDir)/librealuvc.dir/$(Configuration)/exports.def $(ProjectDir)/librealuvc.dir/$(Configuration)//objects.txt
+lib /def:$(ProjectDir)/librealuvc.dir/$(Configuration)/exports.def /machine:x64 /out:$(ProjectDir)/$(Configuration)/librealuvc.lib
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreLinkEvent>
+    <Link>
+      <ModuleDefinitionFile></ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
