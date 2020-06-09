@@ -7,12 +7,12 @@
       <PreLinkEvent>
       <Message>Auto build dll exports</Message>
       <Command>setlocal
-cd C:\build_old\debug\librealsense
+cd $(ProjectDir)
 if %errorlevel% neq 0 goto :cmEnd
 C:
 if %errorlevel% neq 0 goto :cmEnd
-cmake.exe -E __create_def $(ProjectDir)/librealuvc.dir/$(Configuration)/exports.def $(ProjectDir)/librealuvc.dir/$(Configuration)//objects.txt
-lib /def:$(ProjectDir)/librealuvc.dir/$(Configuration)/exports.def /machine:x64 /out:$(ProjectDir)/$(Configuration)/librealuvc.lib
+cmake -E __create_def $(ProjectDir)/librealuvc.dir/$(Configuration)/librealuvc.def $(ProjectDir)/librealuvc.dir/$(Configuration)//objects.txt
+lib /def:$(ProjectDir)/librealuvc.dir/$(Configuration)/librealuvc.def /machine:x64 /out:$(ProjectDir)/$(Configuration)/librealuvc.lib
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
