@@ -135,7 +135,7 @@ namespace librealuvc
             std::vector<stream_profile>             _profiles;
             std::vector<frame_callback>             _frame_callbacks;
             bool                                    _streaming = false;
-            std::atomic<bool>                       _is_started = false;
+            std::atomic<bool>                       _is_started{ false };
         };
 
         class source_reader_callback : public IMFSourceReaderCallback
