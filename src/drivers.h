@@ -9,7 +9,7 @@ namespace librealuvc {
 // at least one symbol exported from the driver so that we can force it
 // to be loaded.
 
-LIBREALUVC_EXPORT void import_driver_peripheral();
-LIBREALUVC_EXPORT void import_driver_rigel();
+void import_driver_peripheral();
+void import_driver_rigel();
 
-}
+}

@@ -604,8 +604,6 @@ namespace librealuvc
                 if (device_info == INVALID_HANDLE_VALUE)
                     return false;
 
-                auto di = std::shared_ptr<void>(device_info, SetupDiDestroyDeviceInfoList);
-
                 // enumerate all imaging devices.
                 for (int member_index = 0; ; ++member_index)
                 {
@@ -909,10 +907,9 @@ namespace librealuvc
         create_and_open_status named_mutex::create_named_mutex(const char* camID)
         {
             CString lstr;
-            CString IDstr(camID);
             // IVCAM_DLL string is left in librealuvc to allow safe
             // interoperability with existing tools like DCM
-            lstr.Format(L"Global\\IVCAM_DLL_WINUSB_MUTEX%s", IDstr);
+            lstr.Format(L"Global\\IVCAM_DLL_WINUSB_MUTEX%s", camID);
             auto pSecDesc = make_allow_all_security_descriptor();
             if (pSecDesc)
             {

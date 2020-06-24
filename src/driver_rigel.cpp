@@ -181,7 +181,7 @@ class PropertyDriverRigel : public IPropertyDriver {
 #define VENDOR_RIGEL  0x2936
 #define PRODUCT_RIGEL 0x1202
 
-LIBREALUVC_EXPORT void import_driver_rigel() {
+void import_driver_rigel() {
   register_property_driver(
     VENDOR_RIGEL,
     PRODUCT_RIGEL,

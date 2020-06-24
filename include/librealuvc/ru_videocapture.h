@@ -42,7 +42,7 @@ class IVideoStream {
 // and a vector of bytes which should be interpreted by higher-level
 // code.
 
-class LIBREALUVC_EXPORT OpaqueCalibration {
+class OpaqueCalibration {
  private:
   string  format_name_;
   int32_t version_major_;
@@ -105,7 +105,7 @@ typedef std::function<
   shared_ptr<IPropertyDriver>(const shared_ptr<uvc_device>&)
 > PropertyDriverMaker;
 
-LIBREALUVC_EXPORT void register_property_driver(
+void register_property_driver(
   uint16_t vendor_id,
   uint16_t product_id,
   PropertyDriverMaker maker
@@ -118,7 +118,7 @@ enum CapPropLeap {
   CAP_PROP_LEAP_LEDS = 102,
 };
 
-class LIBREALUVC_EXPORT VideoCapture : public cv::VideoCapture {
+class VideoCapture : public cv::VideoCapture {
  protected:
   bool is_opencv_;
   unique_ptr<cv::VideoCapture> opencv_;

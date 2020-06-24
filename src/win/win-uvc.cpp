@@ -1251,7 +1251,7 @@ namespace librealuvc
 
             check_connection();
 
-            auto& elem = std::find_if(_streams.begin(), _streams.end(),
+            auto elem = std::find_if(_streams.begin(), _streams.end(),
                 [&](const profile_and_callback& pac) {
                 return (pac.profile == profile && (pac.callback));
             });

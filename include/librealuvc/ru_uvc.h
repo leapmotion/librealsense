@@ -13,7 +13,7 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
-class LIBREALUVC_EXPORT control_range {
+class control_range {
  public:
   vector<uint8_t> min;
   vector<uint8_t> max;
@@ -30,7 +30,7 @@ class LIBREALUVC_EXPORT control_range {
                 vector<uint8_t> astep, vector<uint8_t> adef);
 };
 
-struct LIBREALUVC_EXPORT guid {
+struct guid {
   uint32_t data1;
   uint16_t data2;
   uint16_t data3;
@@ -43,7 +43,7 @@ struct LIBREALUVC_EXPORT guid {
 // Host driver assigns subdevice and node
 // unit and guid are hard-coded in firmware
 
-struct LIBREALUVC_EXPORT extension_unit {
+struct extension_unit {
   int subdevice;
   int unit;
   int node;
@@ -58,7 +58,7 @@ enum power_state {
   D3  // sleep
 };
 
-class LIBREALUVC_EXPORT uvc_device {
+class uvc_device {
  public:
   typedef std::function<void(const notification&)> error_callback;
  protected:
@@ -93,7 +93,7 @@ class LIBREALUVC_EXPORT uvc_device {
   virtual usb_spec get_usb_specification() const = 0;
 };
 
-class LIBREALUVC_EXPORT uvc_device_info {
+class uvc_device_info {
  public:
   string id; // distinguish different pins of one device
   uint16_t vid;
@@ -115,7 +115,7 @@ class LIBREALUVC_EXPORT uvc_device_info {
   operator string() const { return this->to_string(); }
 };
 
-class LIBREALUVC_EXPORT uvc_device_with_retry : public uvc_device {
+class uvc_device_with_retry : public uvc_device {
  private:
    shared_ptr<uvc_device> raw_;
  public:
