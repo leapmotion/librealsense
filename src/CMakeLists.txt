@@ -37,7 +37,7 @@ target_sources(${LRS_TARGET}
         "${CMAKE_CURRENT_LIST_DIR}/win/win-backend.cpp"
 )
 
-target_link_libraries_foreach(TARGET ${LRS_TARGET} SCOPE PUBLIC LIBS ${OpenCV_LIBS})
+target_link_libraries(${LRS_TARGET} PUBLIC ${OpenCV_LIBS})
 
 if(TARGET OpenCV::highgui)
   add_executable(

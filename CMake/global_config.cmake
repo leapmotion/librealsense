@@ -54,24 +54,8 @@ macro(global_set_flags)
     add_definitions(-D${BACKEND} -DUNICODE)
 endmacro()
 
-function(target_link_libraries_foreach)
-  cmake_parse_arguments(
-    LIBREALUVC
-      ""
-      "TARGET;SCOPE"
-      "LIBS"
-    ${ARGN})
-
-  message(STATUS "target_link_libraries: ${LIBREALUVC_TARGET} ${LIBREALUVC_SCOPE} ${LIBREALUVC_LIBS}")
-  foreach(target in ${LIBREALUVC_TARGET} ${LIBREALUVC_TARGET}_static ${LIBREALUVC_TARGET}_shared)
-    if (TARGET ${target})
-      target_link_libraries(${target} ${LIBREALUVC_SCOPE} ${LIBREALUVC_LIBS})
-    endif()
-  endforeach()
-endfunction()
-
 macro(global_target_config)
-    target_link_libraries_foreach(TARGET ${LRS_TARGET} SCOPE PRIVATE LIBS ${CMAKE_THREAD_LIBS_INIT} ${TRACKING_DEVICE_LIBS})
+    target_link_libraries(${LRS_TARGET} PRIVATE ${CMAKE_THREAD_LIBS_INIT} ${TRACKING_DEVICE_LIBS})
 
     include_directories(${LRS_TARGET} src)
 
@@ -94,7 +78,7 @@ macro(add_OpenCV)
     message(STATUS "Building with OpenCV")
 	find_package(OpenCV REQUIRED)
     target_compile_definitions(${LRS_TARGET} PRIVATE WITH_OPENCV=1)
-    target_link_libraries_foreach(TARGET ${LRS_TARGET} SCOPE PUBLIC LIBS ${OpenCV_LIBS})
+    target_link_libraries(${LRS_TARGET} PUBLIC ${OpenCV_LIBS})
     target_include_directories(${LRS_TARGET} PUBLIC ${OpenCV_INCLUDE_DIR})
 endmacro()
 
@@ -105,6 +89,6 @@ macro(add_tm2)
         add_dependencies(tm libusb)
     endif()
     target_compile_definitions(${LRS_TARGET} PRIVATE WITH_TRACKING=1 BUILD_STATIC=1)
-    target_link_libraries_foreach(TARGET ${LRS_TARGET} SCOPE PRIVATE LIBS tm ${CMAKE_THREAD_LIBS_INIT} ${TRACKING_DEVICE_LIBS})
+    target_link_libraries(${LRS_TARGET} PRIVATE tm ${CMAKE_THREAD_LIBS_INIT} ${TRACKING_DEVICE_LIBS})
     target_include_directories(${LRS_TARGET} PRIVATE third-party/libtm/libtm/include)
 endmacro()
