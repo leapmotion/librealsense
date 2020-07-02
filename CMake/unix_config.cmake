@@ -61,5 +61,5 @@ macro(os_target_config)
     message(STATUS "LIBUSB1_LIBRARIES_PATHNAME ${LIBUSB1_LIBRARIES_PATHNAME}")
 
     target_include_directories(${LRS_TARGET} PRIVATE ${LIBUSB1_INCLUDE_DIRS})
-    target_link_libraries_foreach(TARGET ${LRS_TARGET} SCOPE PRIVATE LIBS ${LIBUSB1_LIBRARIES_PATHNAME})
+    target_link_libraries(${LRS_TARGET} PRIVATE ${LIBUSB1_LIBRARIES_PATHNAME})
 endmacro()
