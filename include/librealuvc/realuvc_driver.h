@@ -65,7 +65,7 @@ class DevFrameQueue {
     const std::function<void()>& release_func
   );
   
-  void pop_front(ru_time_t& ts, cv::Mat& mat);  
+  bool pop_front(ru_time_t& ts, cv::Mat& mat);  
 };
 
 } // end librealuvc
