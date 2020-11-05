@@ -1,5 +1,6 @@
 #include <librealuvc/realuvc_driver.h>
 #include <condition_variable>
+#include <chrono>
 
 #if 0
 #define D(...) { printf("DEBUG[%s,%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\n"); fflush(stdout); }
@@ -197,12 +198,17 @@ void print_mat(const char* what, const cv::Mat& mat) {
   fflush(stdout);
 }
   
-void DevFrameQueue::pop_front(ru_time_t& ts, cv::Mat& mat) {
+bool DevFrameQueue::pop_front(ru_time_t& ts, cv::Mat& mat) {
   std::unique_lock<std::mutex> lock(mutex_);
+
   while (size_ <= 0) {
     ++num_sleepers_;
-    wakeup_.wait(lock);
+    if (wakeup_.wait_for(lock, std::chrono::milliseconds(250)) == std::cv_status::timeout) {
+      D("pop_front - wait for messages timed out");
+      return false;
+    }
   }
+
   size_t front = front_;
   DevFrame* f = queue_[front];
   queue_[front] = nullptr;
@@ -260,6 +266,8 @@ void DevFrameQueue::pop_front(ru_time_t& ts, cv::Mat& mat) {
   data->refcount = 1;
   data->size = 1;
   mat = m;
+  
+  return true;
 }
 
 } // end librealuvc

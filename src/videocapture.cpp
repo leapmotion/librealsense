@@ -374,7 +374,11 @@ bool VideoCapture::read(cv::OutputArray image) {
     if (!istream->is_streaming_) return false;
   } // don't hold the mutex while possibly waiting for frame
   cv::Mat tmp;
-  istream->queue_.pop_front(istream->frame_time_, tmp); // wait for a frame if necessary
+  
+  // wait for a frame, or return false if timeout reached
+  if (!istream->queue_.pop_front(istream->frame_time_, tmp))
+    return false;
+
   if (image.needed()) {
     // OutputArray::assign() will not copy unless it needs to
     image.assign(tmp);
