@@ -116,6 +116,7 @@ enum CapPropLeap {
   CAP_PROP_LEAP_BASE = 100,
   CAP_PROP_LEAP_HDR  = 101,
   CAP_PROP_LEAP_LEDS = 102,
+  CAP_PROP_LEAP_PULSEWIDTHMODULATION = 103
 };
 
 class VideoCapture : public cv::VideoCapture {
