@@ -578,11 +578,21 @@ shared_ptr<OpaqueCalibration> VideoCapture::get_opaque_calibration() {
 }
 
 bool VideoCapture::get_xu(int ctrl, void* data, int len) {
-  return false;
+  if (!driver_) {
+    return false;
+  }
+  
+  auto res = driver_->get_prop(ctrl, (double*) data);
+  return res == librealuvc::HandlerResult::kHandlerTrue;
 }
 
 bool VideoCapture::set_xu(int ctrl, const void* data, int len) {
-  return false;
+  if (!driver_) {
+    return false;
+  }
+
+  auto res = driver_->set_prop(ctrl, *(double*) data);
+  return res == librealuvc::HandlerResult::kHandlerTrue;
 }
 
 } // end librealuvc
