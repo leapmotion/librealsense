@@ -98,6 +98,13 @@ class PropertyDriverRigel : public IPropertyDriver {
       case CAP_PROP_LEAP_LEDS:
         *val = leds_;
         break;
+      case CAP_PROP_LEAP_PULSEWIDTHMODULATION: {
+        uint32_t tmp;
+        ok = dev_->get_xu(leap_xu_, LEAP_XU_ESC_PULSE_WIDTH, (uint8_t*)&tmp, sizeof(tmp));
+        if (ok) {
+          *val = static_cast<double>(tmp);
+        }
+      } break;
       default:
         return kHandlerNotDone;
     }
@@ -171,6 +178,10 @@ class PropertyDriverRigel : public IPropertyDriver {
         if (ok) leds_ = val;
         break;
       }
+      case CAP_PROP_LEAP_PULSEWIDTHMODULATION: {
+        const auto tmp = static_cast<uint32_t>(val);
+        ok = dev_->set_xu(leap_xu_, LEAP_XU_ESC_PULSE_WIDTH, (uint8_t*)&tmp, sizeof(tmp));
+      } break;
       default:
         return kHandlerNotDone;
     }
