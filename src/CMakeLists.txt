@@ -39,7 +39,7 @@ target_sources(${LRS_TARGET}
 
 target_link_libraries(${LRS_TARGET} PUBLIC ${OpenCV_LIBS})
 
-if(TARGET OpenCV::highgui)
+if(TARGET CONAN_PKG::opencv)
   add_executable(
       mytest
         "${CMAKE_CURRENT_LIST_DIR}/mytest.cpp"
@@ -48,7 +48,7 @@ if(TARGET OpenCV::highgui)
   target_link_libraries(
       mytest
           ${LRS_TARGET}
-          ${OpenCV_LIBS}
+          CONAN_PKG::opencv
   )
 
   add_executable(
@@ -60,8 +60,6 @@ if(TARGET OpenCV::highgui)
   target_link_libraries(
       viewer
           ${LRS_TARGET}
-          OpenCV::highgui
+          CONAN_PKG::opencv
   )
 endif()
-
-
