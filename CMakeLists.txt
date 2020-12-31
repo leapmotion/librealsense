@@ -37,34 +37,29 @@ global_set_flags()
 message(STATUS "add_library: ${LRS_TARGET} SHARED: ${BUILD_SHARED_LIBS}")
 add_library(${LRS_TARGET} "")
 
-# Conan
-# -----
-# Basic Conan setup.
+# ---------------------
+# Libraries - via Conan
+# ---------------------
+
+# Basic Conan setup. conanbuildinfo.cmake is produced by the `conan install` command, which references conanfile.py.
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-# OpenCV
-# ------
+# To support OpenCV and any other conan-based libraries, conan_basic_setup() is almost all we need. However, the test targets require specific add_library invocations, which is provided by this additional macro provided by conanbuildinfo.cmake.
+# 
+# This invokes add_library(CONAN_PKG::opencv ...), which replaces old references to the OpenCV dependency from before the conan setup. In src/CMakeLists.txt executables that use OpenCV for viewing camera output are now able to depend on CONAN_PKG::opencv and any other specific packages we're getting through conan.
+conan_define_targets()
 
-# CURRENT STATUS: Seeing if conan_basic_setup pulls in OpenCV just fine...
-
+# -------------------
+# OpenCV -- Reference
+# -------------------
 # Old non-Conan OpenCV inclusion.
-# ---
+
 # # add_OpenCV() (from global_config.cmake)
 # find_package(OpenCV REQUIRED)
 # set(DEPENDENCIES librealuvc ${OpenCV_LIBS})
 # include_directories(${OpenCV_INCLUDE_DIRS})
 # add_library(OpenCV SHARED IMPORTED)
-# ---
-# Conan OpenCV.
-conan_define_targets()
-# find_package(OpenCV REQUIRED) # Nope
-# set(OpenCV_LIBS ${CONAN_LIBS_OPENCV})
-# set(OpenCV_INCLUDE_DIRS ${CONAN_INCLUDE_DIRS_OPENCV})
-# set(DEPENDENCIES librealuvc ${OpenCV_LIBS})
-# include_directories(${OpenCV_INCLUDE_DIRS})
-# target_link_libraries(${LRS_TARGET} PUBLIC ${OpenCV_LIBS})
-# target_include_directories(${LRS_TARGET} PUBLIC ${OpenCV_INCLUDE_DIR})
 
 # ------------------
 # More Configuration
