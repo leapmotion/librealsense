@@ -10,6 +10,7 @@
 #include "ru_usb.h"
 #include "ru_uvc.h"
 #include "ru_videocapture.h"
+#include <thread>
 
 // These macro definitions are parsed by config_version.cmake
 
@@ -36,7 +37,7 @@ class backend {
  public:
   virtual ~backend() = default;
   
-  virtual shared_ptr<device_watcher> create_device_watcher() const = 0;  
+  virtual shared_ptr<device_watcher> create_device_watcher() const = 0;
   virtual shared_ptr<hid_device> create_hid_device(hid_device_info info) const = 0;
   virtual shared_ptr<usb_device> create_usb_device(usb_device_info info) const = 0;
   virtual shared_ptr<uvc_device> create_uvc_device(uvc_device_info info) const = 0;
@@ -96,7 +97,6 @@ class os_time_service : public time_service {
   virtual ~os_time_service() = default;
   virtual ru_time_t get_time() const;
 };
-
 }
 
 #endif
