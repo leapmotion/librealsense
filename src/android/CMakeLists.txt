@@ -27,6 +27,9 @@ target_sources(${LRS_TARGET}
 
         "${CMAKE_CURRENT_LIST_DIR}/usb_host/device_watcher.h"
         "${CMAKE_CURRENT_LIST_DIR}/usb_host/device_watcher.cpp"
+
+        "${CMAKE_CURRENT_LIST_DIR}/jni/java_env.h"
+        "${CMAKE_CURRENT_LIST_DIR}/jni/java_env.cpp"
 )
 
 message(STATUS "Prepare librealuvc for Android OS (${ANDROID_NDK_ABI_NAME})")
