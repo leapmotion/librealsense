@@ -35,4 +35,7 @@ target_sources(${LRS_TARGET}
         "${CMAKE_CURRENT_LIST_DIR}/jni/java_env.cpp"
 )
 
+# Required for structured bindings
+target_compile_features(${LRS_TARGET} PRIVATE cxx_std_17)
+
 message(STATUS "Prepare librealuvc for Android OS (${ANDROID_NDK_ABI_NAME})")

@@ -8,6 +8,7 @@
 #include "android-hid.h"
 #include "../types.h"
 #include "usb_host/device_watcher.h"
+#include "usb_host/device_enumerator.h"
 #include <chrono>
 #include <cctype> // std::tolower
 
@@ -38,6 +39,16 @@ namespace librealuvc {
         }
 
         std::vector<uvc_device_info> android_backend::query_uvc_devices() const {
+            // Ultimately we want to update from a small Android library included in our server
+            // which listens for USB hotplug events and updates the device list dynamically. But
+            // for Tetra stage 1 a persistent cache will do.
+
+            auto devices = usb_host::enumerate_usb_devices();
+
+            for (auto [name, fd] : devices) {
+              usb_host::android_device_watcher::addUsbDevice(name, fd);
+            }
+
             return usb_host::android_device_watcher::query_uvc_devices();
         }
 

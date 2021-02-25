@@ -51,6 +51,16 @@ std::vector<uvc_device_info> android_device_watcher::query_uvc_devices() {
 }
 
 void android_device_watcher::addUsbDevice(const std::string& deviceName, int fileDescriptor) {
+    auto find_device = [&deviceName](const std::shared_ptr<device>& d) {
+        if (d->get_name() == deviceName) return true;
+        return false;
+    };
+
+    if (std::find_if(_devices.cbegin(), _devices.cend(), find_device) != _devices.cend()) {
+      LOG_INFO(deviceName << " already in cache. Not adding again");
+      return;
+    }
+
     backend_device_group prev;
     prev.uvc_devices = android_device_watcher::query_uvc_devices();
     LOG_DEBUG("AddUsbDevice, previous device count: " << prev.uvc_devices.size());
