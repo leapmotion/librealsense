@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(librealuvc LANGUAGES CXX C)
 
+set(CONAN_DISABLE_CHECK_COMPILER True)
+
 # -------
 # Modules
 # -------
@@ -42,7 +44,7 @@ add_library(${LRS_TARGET} "")
 # ---------------------
 
 # Basic Conan setup. conanbuildinfo.cmake is produced by the `conan install` command, which references conanfile.py.
-include(${CMAKE_BINARY_DIR}/build/conanbuildinfo.cmake)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # To support OpenCV and any other conan-based libraries, conan_basic_setup() is almost all we need. However, the test targets require specific add_library invocations, which is provided by this additional macro provided by conanbuildinfo.cmake.
