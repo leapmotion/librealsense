@@ -16,7 +16,6 @@ jobs:
       - name: Install Conan
         run: |
           pip install conan
-          conan remote add conan-center https://conan.bintray.com
 
       - name: Install Dependencies
         run: |
