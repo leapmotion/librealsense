@@ -56,7 +56,7 @@ class PropertyDriverRigel : public IPropertyDriver {
   bool is_stereo_camera() override {
     return true;
   }
-  
+
   DevFrameFixup get_frame_fixup() override {
     return FIXUP_GRAY8_ROW_L_ROW_R;
   }
@@ -110,7 +110,7 @@ class PropertyDriverRigel : public IPropertyDriver {
     }
     return (ok ? kHandlerTrue : kHandlerFalse);
   }
-  
+
   HandlerResult get_prop_range(int prop_id, double* min_val, double* max_val) override {
     bool ok = true;
     *min_val = 0;
@@ -138,12 +138,21 @@ class PropertyDriverRigel : public IPropertyDriver {
       case CAP_PROP_LEAP_LEDS:
         *max_val = 1;
         break;
+      case CAP_PROP_LEAP_PULSEWIDTHMODULATION: {
+        vector<uint8_t> buf(sizeof(LEAP_DEVCONFIG));
+        ok = dev_->get_xu(leap_xu_, LEAP_XU_DEVCONFIG, buf.data(), sizeof(LEAP_DEVCONFIG));
+        auto config = (LEAP_DEVCONFIG*)buf.data();
+
+        *min_val = config->ledPulseWidthMin_uS;
+        *max_val = config->ledPulseWidthMax_uS;
+        break;
+      }
       default:
         return kHandlerNotDone;
     }
     return (ok ? kHandlerTrue : kHandlerFalse);
   }
-  
+
   HandlerResult set_prop(int prop_id, double val) override {
     bool ok = true;
     switch (prop_id) {
