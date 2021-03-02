@@ -13,13 +13,29 @@ jobs:
         with:
           lfs: true
 
+      - name: Cache Pip Packages
+        uses: actions/cache@v2
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install Conan
         run: |
           pip install conan
 
+      - name: Cache Conan Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~\.conan
+          key: ${{ runner.os }}-conan-
+          restore-keys: |
+            ${{ runner.os }}-conan-
+
       - name: Install Dependencies
         run: |
-          conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="15"
+          conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
 
       - name: Build Windows Library
         run: |
