@@ -2,8 +2,6 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(librealuvc LANGUAGES CXX C)
 
-set(CONAN_DISABLE_CHECK_COMPILER True)
-
 # -------
 # Modules
 # -------
