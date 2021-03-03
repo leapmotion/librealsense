@@ -8,7 +8,7 @@ These instructions are still a work-in-progress.
 
 ```sh
 conan install . --install-folder build -r conan-center
-conan build . --install-folder build -r conan-center
+conan build . --build-folder build
 ```
 
 The `-r conan-center` part is necessary if you've modified your `conan remote` setup for building e.g. libtrack by changing your default remote to gitlab. If you don't have conan-center defined you may need to add it:
