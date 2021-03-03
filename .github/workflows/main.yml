@@ -51,10 +51,12 @@ jobs:
 
       - name: Copy OpenCV .dll's to Build Artifacts
         run: |
+          ls C:\
+          ls C:\.conan
+          ls C:\.conan\*\*\*\*
           xcopy C:\.conan\2d8994\0\bin .\build\bin
 
       - name: Upload Windows Library
-        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: librealuvc-windows
