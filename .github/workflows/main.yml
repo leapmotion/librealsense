@@ -35,11 +35,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          conan install . --build-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
+          conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
 
       - name: Build Windows Library
         run: |
-          conan build . --install-folder build
+          conan build . --build-folder build
 
       - name: Upload Windows Library
         uses: actions/upload-artifact@v2
