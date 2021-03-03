@@ -1,0 +1,61 @@
+name: librealuvc - Continuous Integration
+
+on:
+  push
+
+jobs:
+  build-win:
+    name: Build Windows Library
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Cache Pip Packages
+        uses: actions/cache@v2
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Conan
+        run: |
+          pip install conan
+
+      - name: Cache Conan Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~\.conan
+          key: ${{ runner.os }}-conan-
+          restore-keys: |
+            ${{ runner.os }}-conan-
+
+      - name: Cache Conan Binaries
+        uses: actions/cache@v2
+        with:
+          path: C:\.conan
+          key: ${{ runner.os }}-conan-binaries-
+          restore-keys: |
+            ${{ runner.os }}-conan-binaries-
+
+      - name: Install Dependencies
+        run: |
+          conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
+
+      - name: Build Windows Library
+        run: |
+          conan build . --build-folder build
+
+      - name: Copy OpenCV .dll's to Build Artifacts
+        run: |
+          ls C:\.conan\*\*\*\*
+          xcopy C:\.conan\194228\1\bin .\build\bin
+
+      - name: Upload Windows Library
+        uses: actions/upload-artifact@v2
+        with:
+          name: librealuvc-windows
+          path: build/bin/
