@@ -41,6 +41,9 @@ jobs:
         run: |
           conan build . --build-folder build
 
+      - name: Copy OpenCV .dll's to Build Artifacts
+        run: xcopy ~\.conan\2d8994\1\bin .\build\bin
+
       - name: Upload Windows Library
         uses: actions/upload-artifact@v2
         with:
