@@ -33,6 +33,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conan-
 
+      - name: Cache Conan Binaries
+        uses: actions/cache@v2
+        with:
+          path: C:\.conan
+          key: ${{ runner.os }}-conan-binaries-
+          restore-keys: |
+            ${{ runner.os }}-conan-binaries-
+
       - name: Install Dependencies
         run: |
           conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
@@ -42,7 +50,8 @@ jobs:
           conan build . --build-folder build
 
       - name: Copy OpenCV .dll's to Build Artifacts
-        run: xcopy ~\.conan\2d8994\1\bin .\build\bin
+        run: |
+          xcopy C:\.conan\2d8994\1\bin .\build\bin
 
       - name: Upload Windows Library
         uses: actions/upload-artifact@v2
