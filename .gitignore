@@ -8,6 +8,9 @@ ubuntu-xenial-hwe/
 build/
 connectivity_check
 
+# conan
+_deps
+
 # XCode
 .DS_Store
 *.pbxuser
