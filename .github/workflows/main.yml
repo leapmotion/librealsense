@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          conan install . --install-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
+          conan install . --build-folder build -r conan-center -s compiler='Visual Studio' -s compiler.version="16"
 
       - name: Build Windows Library
         run: |

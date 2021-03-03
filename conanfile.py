@@ -18,6 +18,7 @@ class PocoTimerConan(ConanFile):
   
   # Configuration for dependencies.
   # default_options = {"poco:shared": True, "openssl:shared": True}
+  default_options = { "opencv:shared": True }
 
   # e.g. copy all dll files from the "bin" package folder to the "bin" project folder
   # e.g. copy all dylib files from the "lib" package folder to the "bin" project folder 
