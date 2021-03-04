@@ -796,111 +796,94 @@ uvc_frame_desc_t *usbhost_uvc_find_frame_desc_stream(usbhost_uvc_stream_handle_t
     return usbhost_uvc_find_frame_desc_stream_if(strmh->stream_if, format_id, frame_id);
 }
 
+void usbhost_uvc_process_payload(usbhost_uvc_stream_handle_t* stream_handle, frames_archive *archive, frames_queue *queue) {
 
-void usbhost_uvc_swap_buffers(usbhost_uvc_stream_handle_t *strmh, size_t leftover = 0) {
-    uint8_t *tmp_buf;
+    const size_t payload_length = stream_handle->got_bytes;
 
-    //pthread_mutex_lock(&strmh->cb_mutex);
-
-    /* swap the buffers */
-    tmp_buf = strmh->holdbuf;
-    strmh->hold_bytes = strmh->got_bytes;
-    strmh->holdbuf = strmh->outbuf;
-    strmh->outbuf = tmp_buf;
-    strmh->hold_last_scr = strmh->last_scr;
-    strmh->hold_pts = strmh->pts;
-    strmh->hold_seq = strmh->seq;
-
-    //pthread_cond_broadcast(&strmh->cb_cond);
-    //pthread_mutex_unlock(&strmh->cb_mutex);
-
-    strmh->seq++;
-    strmh->got_bytes = leftover;
-    strmh->last_scr = 0;
-    strmh->pts = 0;
-}
-
-void usbhost_uvc_process_payload(usbhost_uvc_stream_handle_t *strmh,
-                                 frames_archive *archive,
-                                 frames_queue *queue) {
-    uint8_t header_info;
-    size_t payload_len = strmh->got_bytes;
-    uint8_t *payload = strmh->outbuf;
-
-    /* ignore empty payload transfers */
-    if (payload_len == 0)
-        return;
-    uint8_t header_len = payload[0];
-
-    if (header_len > payload_len)
-    {
-        LOG_ERROR("bogus packet: actual_len=" << payload_len << ", header_len=" << header_len);
+    // Nothing to do for empty requests.
+    if (payload_length == 0) {
         return;
     }
 
-    size_t data_len = strmh->got_bytes - header_len;
+    const uint8_t header_length = stream_handle->outbuf[0];
 
-    if (header_len < 2) {
-        header_info = 0;
+    // Check if the payload length is greater than the received bytes.
+    if (header_length > payload_length) {
+        LOG_ERROR("bogus packet: payload_length=" << payload_length << ", header_length=" << (int)header_length);
+        return;
     }
-    else {
-        /** @todo we should be checking the end-of-header bit */
-        size_t variable_offset = 2;
 
-        header_info = payload[1];
+    // Check standard UVC header length.
+    if (header_length != 12) {
+        LOG_ERROR("bogus header: header_length=" << (int)header_length);
+    }
 
+    uint8_t header_info = 0;
+
+    //12 bytes - standard UVC header
+    if (header_length == 12) {
+        // @todo we should be checking the end-of-header bit
+
+        header_info = stream_handle->outbuf[1];
         if (header_info & 0x40) {
             LOG_ERROR("bad packet: error bit set");
             return;
         }
 
-        if (strmh->fid != (header_info & 1) && strmh->got_bytes != 0) {
-            /* The frame ID bit was flipped, but we have image data sitting
-            around from prior transfers. This means the camera didn't send
-            an EOF for the last transfer of the previous frame. */
-//            LOG_DEBUG("complete buffer : length " << strmh->got_bytes);
-            usbhost_uvc_swap_buffers(strmh);
-        }
+        size_t variable_offset = 2;
 
-        strmh->fid = header_info & 1;
+        stream_handle->fid = header_info & 1;
 
         if (header_info & (1 << 2)) {
-            strmh->pts = DW_TO_INT(payload + variable_offset);
+            stream_handle->pts = DW_TO_INT(stream_handle->outbuf + variable_offset);
             variable_offset += 4;
         }
 
         if (header_info & (1 << 3)) {
-            /** @todo read the SOF token counter */
-            strmh->last_scr = DW_TO_INT(payload + variable_offset);
+            // @todo read the SOF token counter
+            stream_handle->last_scr = DW_TO_INT(stream_handle->outbuf + variable_offset);
             variable_offset += 6;
         }
     }
 
-    if ((data_len > 0) && (strmh->cur_ctrl.dwMaxVideoFrameSize == (data_len)))
-    {
-        //if (header_info & (1 << 1)) { // Temp patch to allow old firmware
-        /* The EOF bit is set, so publish the complete frame */
-        usbhost_uvc_swap_buffers(strmh);
+    const size_t data_length = stream_handle->got_bytes - header_length;
 
-        auto frame_p = archive->allocate();
-        if (frame_p)
-        {
-            frame_ptr fp(frame_p, &cleanup_frame);
+    if (data_length == 0) {
+        return;
+    }
 
-            memcpy(fp->pixels.data(), payload, data_len + header_len);
+    size_t additional_packets_in_payload = 0;
+    if (stream_handle->cur_ctrl.dwMaxVideoFrameSize > stream_handle->cur_ctrl.dwMaxPayloadTransferSize) {
+        additional_packets_in_payload = stream_handle->cur_ctrl.dwMaxVideoFrameSize / stream_handle->cur_ctrl.dwMaxPayloadTransferSize;
+    }
+    if (stream_handle->cur_ctrl.dwMaxVideoFrameSize != data_length - (additional_packets_in_payload * 12)) {
+        LOG_WARNING("Incorrect sized frame.");
+        return;
+    }
 
-            LOG_DEBUG("Passing packet to user CB with size " << (data_len + header_len));
-            librealuvc::frame_object fo{ data_len, header_len,
-                                                     fp->pixels.data() + header_len , fp->pixels.data() };
-            fp->fo = fo;
+    //Each frame is comprised of multiple packets, each with their own UVC header (12 bytes). This must be removed, in order for the image to show correctly - otherwise the UVC header is shown as part of the image (resulting in distortion).
+    auto frame_p = archive->allocate();
+    if (!frame_p) {
+        LOG_WARNING("USB backend is dropping a frame because librealuvc wasn't fast enough");
+        return;
+    }
 
-            queue->enqueue(std::move(fp));
-        }
-        else
-        {
-            LOG_WARNING("Android backend is dropping a frame because librealuvc wasn't fast enough");
+    frame_ptr fp(frame_p, &cleanup_frame);
+    int arrayIndex = 0;
+    int packetLen = stream_handle->cur_ctrl.dwMaxPayloadTransferSize-header_length;
+    for (int i=0; i<stream_handle->cur_ctrl.dwMaxVideoFrameSize; i+=stream_handle->cur_ctrl.dwMaxPayloadTransferSize) {
+        int bytesLeft = stream_handle->cur_ctrl.dwMaxVideoFrameSize - arrayIndex;
+        if (bytesLeft > 0) {
+            if (bytesLeft < packetLen) {
+                packetLen = bytesLeft;
+            }
+            memcpy(&fp->pixels.data()[arrayIndex], stream_handle->outbuf + i + header_length, packetLen);
+            arrayIndex += packetLen;
         }
     }
+
+    fp->fo = librealuvc::frame_object{ data_length, header_length,fp->pixels.data() + header_length , fp->pixels.data() };
+    queue->enqueue(std::move(fp));
 }
 
 void stream_thread(usbhost_uvc_stream_context *strctx) {
@@ -945,7 +928,12 @@ void stream_thread(usbhost_uvc_stream_context *strctx) {
             break;
         }
         strctx->stream->got_bytes = res;
+        const size_t frame_count = queue.size();
         usbhost_uvc_process_payload(strctx->stream, &archive, &queue);
+        if (queue.size() <= frame_count) {
+            // Failed to add a new frame.
+            pipe->read_pipe(strctx->stream->outbuf, LIBUVC_XFER_BUF_SIZE, 1);
+        }
     } while (strctx->stream->running);
 
     int ep = strctx->endpoint;

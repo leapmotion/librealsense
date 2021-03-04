@@ -9,6 +9,8 @@
 #include "../../backend.h"
 #include "../uvc_types.h"
 
+#define RIGEL_PIXEL_COUNT 294912 //for 384 x 384 x 2 image
+#define UVC_HEADER_LEN 12
 #define LIBUVC_XFER_BUF_SIZE    ( 4 * 1024 * 1024 )
 #define MAX_USB_INTERFACES 20
 
