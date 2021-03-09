@@ -21,7 +21,7 @@ namespace librealuvc
             virtual void stop() override;
             static std::vector<std::shared_ptr<device>> get_device_list();
             static std::vector<uvc_device_info> query_uvc_devices();
-            static void addUsbDevice(const std::string& deviceName_, int fileDescriptor);
+            static void addUsbDevice(const std::string& deviceName, int fileDescriptor);
             static void removeUsbDevice(int fileDescriptor);
         };
     }
