@@ -7,6 +7,5 @@
     endif()
 
     if(ANDROID_NDK_TOOLCHAIN_INCLUDED)
-        set(ANDROID_USB_HOST_UVC ON)
         include(CMake/android_config.cmake)
     endif()

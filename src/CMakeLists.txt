@@ -11,7 +11,7 @@ if(BUILD_FOR_OTHER_WIN)
     include(${_rel_path}/win/CMakeLists.txt)
 endif()
 
-if(ANDROID_USB_HOST_UVC)
+if(ANDROID_NDK_TOOLCHAIN_INCLUDED)
     include(${_rel_path}/android/CMakeLists.txt)
 endif()
 
