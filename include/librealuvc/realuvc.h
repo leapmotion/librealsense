@@ -12,6 +12,10 @@
 #include "ru_videocapture.h"
 #include <thread>
 
+#ifdef __ANDROID__
+#include <jni.h>
+#endif  // __ANDROID__
+
 // These macro definitions are parsed by config_version.cmake
 
 #define RU_API_MAJOR_VERSION    0
@@ -99,12 +103,6 @@ class os_time_service : public time_service {
 };
 
 #ifdef __ANDROID__
-// At this stage, the librealuvc library never gets loaded directly into the JVM using
-// System.loadLibrary(). This means that we can't use JNI_OnLoad() to retrieve the JVM pointer.
-// Also annoyingly, JNI_GetCreatedJavaVMs() is not exported by any NDK libraries, meaning we can't
-// use this either.
-// So for the time being, just export this function to be used by Android realuvc clients.
-#include <jni.h>
 void set_java_vm(JavaVM* jvm);
 #endif  // __ANDROID__
 }
