@@ -14,18 +14,6 @@
 
 namespace librealuvc {
     namespace platform {
-        android_backend::android_backend() {
-        }
-
-        android_backend::~android_backend() {
-            try {
-
-            }
-            catch (...) {
-                // TODO: Write to log
-            }
-        }
-
         std::shared_ptr<uvc_device> android_backend::create_uvc_device(uvc_device_info info) const {
 
             LOG_DEBUG("Creating UVC Device from path: " << info.device_path.c_str());
