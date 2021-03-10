@@ -20,23 +20,6 @@ device_vector enumerate_usb_devices() {
   try {
     auto jenv = librealuvc::platform::java_env();
     JNIEnv* env = jenv.env();
-    
-    // Getting method IDs use:
-    // "(argument-types)return-type"
-    //
-    // Java VM Type Signatures:
-    // Signature                    Java Type
-    // Z                            boolean
-    // B                            byte
-    // C                            char
-    // S                            short
-    // I                            int
-    // J                            long
-    // F                            float
-    // D                            double
-    // L fully-qualified-class ;    fully-qualified-class
-    // [ type	                    type[]
-    // ( arg-types ) ret-type	    method type
 
     // Grab the UsbManager instance and class
     jclass activityThreadClass = env->FindClass("android/app/ActivityThread");
@@ -79,12 +62,10 @@ device_vector enumerate_usb_devices() {
     jobject collectionIteratorObject = env->CallObjectMethod(deviceListCollection, collectionIteratorMethodID);
 
     jclass iteratorClass = env->FindClass("java/util/Iterator");
+    jclass usbDeviceClass = env->FindClass("android/hardware/usb/UsbDevice");
     jmethodID iteratorHasNextMethodID = env->GetMethodID(iteratorClass, "hasNext", "()Z");
     jmethodID iteratorNextMethodID = env->GetMethodID(iteratorClass,  "next", "()Ljava/lang/Object;");
-    
-    jclass usbDeviceClass = env->FindClass("android/hardware/usb/UsbDevice");
-    jmethodID usbDeviceVendorIdMethodID = env->GetMethodID(usbDeviceClass, "getVendorId", "()I");
-    jmethodID usbDeviceProductIdMethodID = env->GetMethodID(usbDeviceClass, "getProductId", "()I");
+
     jmethodID usbDeviceNameMethodID = env->GetMethodID(usbDeviceClass, "getDeviceName", "()Ljava/lang/String;");
     jmethodID usbManagerOpenDeviceMethodID = env->GetMethodID(usbManagerClass, "openDevice", "(Landroid/hardware/usb/UsbDevice;)Landroid/hardware/usb/UsbDeviceConnection;");
     jmethodID usbManagerHasPermissionMethodID = env->GetMethodID(usbManagerClass, "hasPermission", "(Landroid/hardware/usb/UsbDevice;)Z");
@@ -95,21 +76,9 @@ device_vector enumerate_usb_devices() {
     // Iterate over the device list
     while((bool)env->CallBooleanMethod(collectionIteratorObject, iteratorHasNextMethodID)) {
       jobject device = env->CallObjectMethod(collectionIteratorObject, iteratorNextMethodID);
-      
-      // Rigel
-      // device.getVendorId() == 0x2936
-      // device.getProductId() == 0x1202
-      jint jVendorId = env->CallIntMethod(device, usbDeviceVendorIdMethodID);
-      jint jProductId = env->CallIntMethod(device, usbDeviceProductIdMethodID);
-      LOG_INFO("Device found [Vendor:" << (int)jVendorId << " Product:" << (int)jProductId << "].");
-      if (((int)jVendorId != 0x2936) || ((int)jProductId != 0x1202)) {
-        LOG_WARNING("Device found [Vendor:" << (int)jVendorId << " Product:" << (int)jProductId << "]. is not a rigel.");
-        continue;
-      }
-      
       jstring jDeviceName = (jstring)env->CallObjectMethod(device, usbDeviceNameMethodID);
+
       std::string deviceName = env->GetStringUTFChars(jDeviceName, 0);
-      
       /*
        * For proof of concept, asking for permissions synchronously via the JNI API will have to do.
        *
