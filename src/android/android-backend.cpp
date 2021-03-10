@@ -45,8 +45,8 @@ namespace librealuvc {
 
             auto devices = usb_host::enumerate_usb_devices();
 
-            for (auto [name, fd] : devices) {
-              usb_host::android_device_watcher::addUsbDevice(name, fd);
+            for (auto dev : devices) {
+              usb_host::android_device_watcher::addUsbDevice(dev.first, dev.second);
             }
 
             return usb_host::android_device_watcher::query_uvc_devices();
