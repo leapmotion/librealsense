@@ -111,18 +111,17 @@ device_vector enumerate_usb_devices() {
       std::string deviceName = env->GetStringUTFChars(jDeviceName, 0);
       
       /*
-       * For Tetra stage 1, asking for permissions synchronously via the JNI API will have to do.
+       * For proof of concept, asking for permissions synchronously via the JNI API will have to do.
        *
        * This is as far from an ideal solution as you can get, as with the way it is called brings
-       * the potential for us to spin continuously and if permissions are denied.
+       * the potential for us to spin infinitely if permissions are denied.
        *
        * What we really need to do, is the following:
        *   - Have a small AAR library built by this project. This will have a device watcher Java
        *   class. When instantiated it will enumerate USB devices and ask for permissions as it
        *   needs.
-       *   - Export a JNI interface from the device_watcher C++ class, as it originally had (check
-       *   git history for src/android/usb_host/device_watcher.cpp) which will allow us to add and
-       *   remove devices.
+       *   - Export a JNI interface from the device_watcher C++ class, which will allow us to add
+       *   and remove devices.
        *   - Bundle librealuvc into the AAR library, and call its JNI interface from the Java class
        *   when permissions are granted.
        */
