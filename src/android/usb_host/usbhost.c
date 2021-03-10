@@ -377,6 +377,7 @@ struct usbhost_device *usb_device_new(const char *dev_name, int fd)
     if (lseek(fd, 0, SEEK_SET) != 0)
         goto failed;
     length = read(fd, device->desc, sizeof(device->desc));
+    // TODO: Check descriptor and IAD and only continue if this is has VIDEO device/function class
     D("usb_device_new read returned %d errno %d\n", length, errno);
     if (length < 0)
         goto failed;

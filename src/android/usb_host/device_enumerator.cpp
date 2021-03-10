@@ -67,18 +67,37 @@ device_vector enumerate_usb_devices() {
     jmethodID iteratorNextMethodID = env->GetMethodID(iteratorClass,  "next", "()Ljava/lang/Object;");
 
     jmethodID usbDeviceNameMethodID = env->GetMethodID(usbDeviceClass, "getDeviceName", "()Ljava/lang/String;");
+    jmethodID usbDeviceClassMethodID = env->GetMethodID(usbDeviceClass, "getDeviceClass", "()I");
     jmethodID usbManagerOpenDeviceMethodID = env->GetMethodID(usbManagerClass, "openDevice", "(Landroid/hardware/usb/UsbDevice;)Landroid/hardware/usb/UsbDeviceConnection;");
     jmethodID usbManagerHasPermissionMethodID = env->GetMethodID(usbManagerClass, "hasPermission", "(Landroid/hardware/usb/UsbDevice;)Z");
     jclass usbDeviceConnectionClass = env->FindClass("android/hardware/usb/UsbDeviceConnection");
     jmethodID usbDeviceConnectionGetFileDescMethodID = env->GetMethodID(usbDeviceConnectionClass, "getFileDescriptor", "()I");
     jmethodID requestPermissionMethodId = env->GetMethodID(usbManagerClass, "requestPermission", "(Landroid/hardware/usb/UsbDevice;Landroid/app/PendingIntent;)V");
 
+    jclass usbConstantsClass = env->FindClass("android/hardware/usb/UsbConstants");
+    jfieldID usbClassVideoFieldID = env->GetStaticFieldID(usbConstantsClass, "USB_CLASS_VIDEO", "I");
+    jfieldID usbClassMiscFieldID = env->GetStaticFieldID(usbConstantsClass, "USB_CLASS_MISC", "I");
+    jint usbClassVideo = env->GetStaticIntField(usbConstantsClass, usbClassVideoFieldID);
+    jint usbClassMisc = env->GetStaticIntField(usbConstantsClass, usbClassMiscFieldID);
+
     // Iterate over the device list
     while((bool)env->CallBooleanMethod(collectionIteratorObject, iteratorHasNextMethodID)) {
       jobject device = env->CallObjectMethod(collectionIteratorObject, iteratorNextMethodID);
       jstring jDeviceName = (jstring)env->CallObjectMethod(device, usbDeviceNameMethodID);
 
+      jint jDeviceClass = env->CallIntMethod(device, usbDeviceClassMethodID);
+
       std::string deviceName = env->GetStringUTFChars(jDeviceName, 0);
+
+      /*
+       * Rigel/LMC devices can only be determined via the USB IAD, but the Android API does not give
+       * us access to this, so allow MISC devices too.
+       */
+      if (jDeviceClass != usbClassVideo && jDeviceClass != usbClassMisc) {
+        LOG_INFO(deviceName << " is not a valid UVC device (class: " << jDeviceClass << ").");
+        continue;
+      }
+
       /*
        * For proof of concept, asking for permissions synchronously via the JNI API will have to do.
        *
