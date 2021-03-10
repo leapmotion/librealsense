@@ -18,7 +18,7 @@ device_vector enumerate_usb_devices() {
   device_vector result{};
 
   try {
-    auto jenv = librealuvc::platform::java_env();
+    librealuvc::platform::java_env jenv;
     JNIEnv* env = jenv.env();
 
     // Grab the UsbManager instance and class
