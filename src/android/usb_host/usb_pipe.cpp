@@ -32,8 +32,8 @@ bool usb_pipe::reset()
 {
     bool rv = usb_device_control_transfer(_device,
                                           0x02, //UVC_FEATURE,
-                                           0x01, //CLEAR_FEATURE
-                                           0, _endpoint.get_endpoint_address(), NULL, 0, 10) == UVC_SUCCESS;
+                                          0x01, //CLEAR_FEATURE
+                                          0, _endpoint.get_endpoint_address(), NULL, 0, 10) == UVC_SUCCESS;
     if(rv)
         LOG_DEBUG("USB pipe " << (int)_endpoint.get_endpoint_address() << " reset successfully");
     else

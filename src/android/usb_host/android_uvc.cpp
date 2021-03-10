@@ -307,7 +307,6 @@ uvc_error_t usbhost_uvc_scan_control(usbhost_uvc_device *dev, usbhost_uvc_device
         if (if_desc->bInterfaceClass == 14 && if_desc->bInterfaceSubClass == 1 &&
             if_desc->bInterfaceNumber == InterfaceNumber) // Video, Control
             break;
-        //std::cout<<"";
 
         if_desc = NULL;
     }
@@ -327,7 +326,6 @@ uvc_error_t usbhost_uvc_scan_control(usbhost_uvc_device *dev, usbhost_uvc_device
 
     while (buffer_left >= 3) { // parseX needs to see buf[0,2] = length,type
         block_size = buffer[0];
-        //printf("%d %x %d\n", buffer[0], buffer[1],buffer_left);
         parse_ret = uvc_parse_vc(dev, info, buffer, block_size);
 
         if (parse_ret != UVC_SUCCESS) {
@@ -338,7 +336,6 @@ uvc_error_t usbhost_uvc_scan_control(usbhost_uvc_device *dev, usbhost_uvc_device
         buffer_left -= block_size;
         buffer += block_size;
     }
-    //LOG_DEBUG("usbhost_uvc_scan_control() complete!");
     return ret;
 }
 
@@ -378,7 +375,6 @@ uvc_error_t usbhost_uvc_scan_streaming(usbhost_uvc_device *dev,
         }
 
         buffer_left -= block_size;
-        //printf("%d %x %x %d\n", buffer[0], buffer[1], buffer[2], buffer_left);
         buffer += block_size;
     }
 

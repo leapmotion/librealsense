@@ -185,7 +185,7 @@ void usb_host_cleanup(struct usb_host_context *context)
 int usb_host_get_fd(struct usb_host_context *context)
 {
     return context->fd;
-} /* usb_host_get_fd() */
+}
 
 int usb_host_load(struct usb_host_context *context,
                   usb_device_added_cb added_cb,
