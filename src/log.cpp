@@ -93,15 +93,15 @@ void log_to_file(ru_severity min_sev, const char* file_path) {
 
 #ifdef RS2_USE_ANDROID_BACKEND
 void android_log_msg(ru_severity sev, const std::string& msg) {
-      switch (sev) {
-        case RU_SEVERITY_DEBUG:   ANDROID_LOG_WARNING("%s",msg.c_str()); break;
-        case RU_SEVERITY_INFO:    ANDROID_LOG_INFO("%s",msg.c_str()); break;
-        case RU_SEVERITY_WARNING: ANDROID_LOG_WARNING("%s",msg.c_str()); break;
-        case RU_SEVERITY_ERROR:   ANDROID_LOG_ERROR("%s",msg.c_str()); break;
-        case RU_SEVERITY_FATAL:   ANDROID_LOG_FATAL("%s",msg.c_str()); break;
-        default:;
-      }
-    }
+  switch (sev) {
+    case RU_SEVERITY_DEBUG:   ANDROID_LOG_WARNING("%s",msg.c_str()); break;
+    case RU_SEVERITY_INFO:    ANDROID_LOG_INFO("%s",msg.c_str()); break;
+    case RU_SEVERITY_WARNING: ANDROID_LOG_WARNING("%s",msg.c_str()); break;
+    case RU_SEVERITY_ERROR:   ANDROID_LOG_ERROR("%s",msg.c_str()); break;
+    case RU_SEVERITY_FATAL:   ANDROID_LOG_FATAL("%s",msg.c_str()); break;
+    default:;
+  }
+}
 #endif
 
 void log_msg(ru_severity sev, const std::string& msg) {
