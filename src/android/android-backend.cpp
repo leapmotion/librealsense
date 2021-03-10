@@ -39,10 +39,8 @@ namespace librealuvc {
         }
 
         std::vector<uvc_device_info> android_backend::query_uvc_devices() const {
-            // Ultimately we want to update from a small Android library included in our server
-            // which listens for USB hotplug events and updates the device list dynamically. But
-            // for Tetra stage 1 a persistent cache will do.
-
+            // Ultimately we will update devices on USB hotplug events but for the time being
+            // we're satisfied with a persistent cache
             auto devices = usb_host::enumerate_usb_devices();
 
             for (auto dev : devices) {
