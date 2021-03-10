@@ -60,7 +60,7 @@ namespace librealuvc
             const std::string& get_product() const { return _sProduct; }
             const std::string& get_manufacturer() const { return _sManufacturer; }
             const std::string& get_serial_number() const { return _sSerialNumber; }
-            const std::string& get_device_description() const;
+            const std::string get_device_description() const;
 
             int get_vid() { return usb_device_get_vendor_id(_handle); }
             int get_pid() { return usb_device_get_product_id(_handle); }

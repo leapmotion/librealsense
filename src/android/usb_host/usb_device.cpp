@@ -145,7 +145,7 @@ void device::build_tree() {
     }
 }
 
-const std::string& device::get_device_description() const {
+const std::string device::get_device_description() const {
     auto desc = _usb_device_descriptor;
     std::stringstream ss;
 
