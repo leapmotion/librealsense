@@ -36,8 +36,6 @@ namespace librealuvc
             android_uvc_device(const uvc_device_info& info, std::shared_ptr<const android_backend> backend);
             ~android_uvc_device();
 
-            //std::vector<uvc_device_info> query_uvc_devices() const;
-
             void probe_and_commit(stream_profile profile, frame_callback callback, int buffers) override;
 
             // open thread and take frames
