@@ -420,7 +420,7 @@ namespace librealuvc {
                 android_uvc_device::set_power_state(D3);
             }
             catch (...) {
-                // TODO: Log
+                LOG_WARNING("Unable to send " << _info.device_path << " to sleep");
             }
         }
 
