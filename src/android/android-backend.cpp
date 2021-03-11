@@ -43,10 +43,7 @@ namespace librealuvc {
         }
 
         std::vector<usb_device_info> android_backend::query_usb_devices() const {
-
-            std::vector<usb_device_info> result;
-            // Not supported
-            return result;
+            throw std::runtime_error("query_usb_devices Not supported");
         }
 
         std::shared_ptr<hid_device> android_backend::create_hid_device(hid_device_info info) const {
@@ -54,9 +51,7 @@ namespace librealuvc {
         }
 
         std::vector<hid_device_info> android_backend::query_hid_devices() const {
-            std::vector<hid_device_info> devices;
-            // Not supported 
-            return devices;
+            throw std::runtime_error("query_hid_devices Not supported");
         }
 
         std::shared_ptr<time_service> android_backend::create_time_service() const {
