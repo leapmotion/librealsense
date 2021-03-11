@@ -1271,22 +1271,16 @@ usbhost_uvc_stream_open_ctrl(usbhost_uvc_device *devh, usbhost_uvc_stream_handle
     memset(strmh, 0, sizeof(usbhost_uvc_stream_handle_t));
     strmh->devh = devh;
     strmh->stream_if = stream_if;
-    //strmh->frame.library_owns_data = 1;
 
-
-    //TODO: Fix this
     ret = usbhost_uvc_stream_ctrl(strmh, ctrl);
     if (ret != UVC_SUCCESS)
         goto fail;
 
     // Set up the streaming status and data space
     strmh->running = 0;
-    /** @todo take only what we need */
+
     strmh->outbuf = (uint8_t *) malloc(LIBUVC_XFER_BUF_SIZE);
     strmh->holdbuf = (uint8_t *) malloc(LIBUVC_XFER_BUF_SIZE);
-
-    /*pthread_mutex_init(&strmh->cb_mutex, NULL);
-    pthread_cond_init(&strmh->cb_cond, NULL);*/
 
     DL_APPEND(devh->streams, strmh);
 
@@ -1749,9 +1743,6 @@ uvc_error_t usbhost_open(usbhost_uvc_device *device, int InterfaceNumber) {
 
     device->deviceData.interfaces = interfaces;
 
-
-    //LOG_DEBUG("usbhost_open() usbhost_uvc_scan_control");
-
     // Fill fields of uvc_device_info on device
     ret = usbhost_uvc_scan_control(device, &device->deviceData, InterfaceNumber);
     if (ret != UVC_SUCCESS) {
@@ -1788,7 +1779,6 @@ uvc_error_t usbhost_close(usbhost_uvc_device *device) {
 
 
         if (device->device) {
-            //usb_device_close(device->deviceHandle->GetHandle()); //TODO: do we need to do this?
             device->device = NULL;
         }
 
