@@ -809,14 +809,9 @@ void usbhost_uvc_process_payload(usbhost_uvc_stream_handle_t* stream_handle, fra
         return;
     }
 
-    // Check standard UVC header length.
-    if (header_length != 12) {
-        LOG_ERROR("bogus header: header_length=" << (int)header_length);
-    }
-
     uint8_t header_info = 0;
 
-    //12 bytes - standard UVC header
+    // 12 bytes - standard UVC header
     if (header_length == 12) {
         // @todo we should be checking the end-of-header bit
 
@@ -840,6 +835,9 @@ void usbhost_uvc_process_payload(usbhost_uvc_stream_handle_t* stream_handle, fra
             stream_handle->last_scr = DW_TO_INT(stream_handle->outbuf + variable_offset);
             variable_offset += 6;
         }
+    } else {
+        LOG_ERROR("bogus header: header_length=" << (int)header_length);
+        return;
     }
 
     const size_t data_length = stream_handle->got_bytes - header_length;
