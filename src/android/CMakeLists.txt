@@ -6,8 +6,8 @@ target_sources(${LRS_TARGET}
         "${CMAKE_CURRENT_LIST_DIR}/usb_host/usbhost.c"
         "${CMAKE_CURRENT_LIST_DIR}/usb_host/usbhost.h"
 
-        "${CMAKE_CURRENT_LIST_DIR}/android-uvc.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/android-uvc.h"
+        "${CMAKE_CURRENT_LIST_DIR}/android-uvc-device.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/android-uvc-device.h"
         "${CMAKE_CURRENT_LIST_DIR}/android-backend.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/android-backend.h"
 

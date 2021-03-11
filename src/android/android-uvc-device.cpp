@@ -4,7 +4,7 @@
 #ifdef RS2_USE_ANDROID_BACKEND
 
 
-#include "android-uvc.h"
+#include "android-uvc-device.h"
 #include "../types.h"
 #include "libuvc/utlist.h"
 #include "usb_host/device_watcher.h"
