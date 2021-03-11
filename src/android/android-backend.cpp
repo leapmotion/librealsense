@@ -5,7 +5,6 @@
 
 #include "android-backend.h"
 #include "android-uvc.h"
-#include "android-hid.h"
 #include "../types.h"
 #include "usb_host/device_watcher.h"
 #include "usb_host/device_enumerator.h"
