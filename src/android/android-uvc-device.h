@@ -78,28 +78,28 @@ namespace librealuvc
             int32_t get_data_usb(uvc_req_code action, int control, int unit, unsigned int length = sizeof(uint32_t)) const;
             void set_data_usb(uvc_req_code action, int control, int unit, int value) const;
 
-            const uvc_device_info                   _info;
-            power_state                             _power_state = D3; // power state change is unsupported
+            const uvc_device_info _info;
+            power_state _power_state = D3; // power state change is unsupported
 
-            uint16_t                                _streamIndex;
-            std::vector<profile_and_callback>       _streams;
-            std::mutex                              _streams_mutex;
+            uint16_t _streamIndex;
+            std::vector<profile_and_callback> _streams;
+            std::mutex _streams_mutex;
 
-            std::shared_ptr<const android_backend>      _backend;
+            std::shared_ptr<const android_backend> _backend;
 
-            std::string                             _location;
-            std::vector<stream_profile>             _profiles;
-            std::vector<frame_callback>             _frame_callbacks;
-            bool                                    _streaming = false;
-            std::atomic<bool>                       _is_started = {false};
+            std::string _location;
+            std::vector<stream_profile> _profiles;
+            std::vector<frame_callback> _frame_callbacks;
+            bool _streaming = false;
+            std::atomic<bool> _is_started = { false };
 
-            std::shared_ptr<usbhost_uvc_device>     _device = nullptr;
+            std::shared_ptr<usbhost_uvc_device> _device = nullptr;
 
             int _input_terminal = 0;
             int _processing_unit = 0;
             int _extension_unit = 0;
-            mutable std::recursive_mutex            _systemwide_lock;
-            mutable std::mutex                      _power_mutex;
+            mutable std::recursive_mutex _systemwide_lock;
+            mutable std::mutex _power_mutex;
         };
     }
 }
