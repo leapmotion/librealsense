@@ -403,8 +403,6 @@ namespace librealuvc {
             return results;
         }
 
-
-        //TODO: fix this
         android_uvc_device::android_uvc_device(const uvc_device_info &info,
                                                std::shared_ptr<const android_backend> backend)
                 : _streamIndex(MAX_PINS), _info(info), _backend(std::move(backend)),
