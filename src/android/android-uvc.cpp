@@ -159,7 +159,7 @@ namespace librealuvc {
                     sizeof(int32_t), 0);
 
             if (status < 0) {
-                throw ("winusb_SendControl failed!");
+                throw ("usb_device_control_transfer failed!");
             }
 
             if (status != sizeof(int32_t)) {
@@ -199,7 +199,7 @@ namespace librealuvc {
                     buffer,
                     sizeof(int32_t), 0);
 
-            if (status < 0) throw ("winusb_SendControl failed!");
+            if (status < 0) throw ("usb_device_control_transfer failed!");
 
             if (status != sizeof(int32_t))
                 throw std::runtime_error("insufficient data writen to USB");
@@ -442,7 +442,7 @@ namespace librealuvc {
         };
 
         // receive the original callback and pass it to the right device. this is registered by libUVC.
-        static void internal_winusb_uvc_callback(frame_object *frame, void *ptr) {
+        static void internal_android_uvc_callback(frame_object *frame, void *ptr) {
             callback_context *context = (callback_context *) ptr;
             android_uvc_device *device = context->_this;
             context->_callback(context->_profile, *frame, []() mutable {});
@@ -495,7 +495,7 @@ namespace librealuvc {
             context->_this = this;
             context->_profile = profile;
 
-            usbhost_start_streaming(_device.get(), &ctrl, internal_winusb_uvc_callback, context, 0);
+            usbhost_start_streaming(_device.get(), &ctrl, internal_android_uvc_callback, context, 0);
         }
 
         void
